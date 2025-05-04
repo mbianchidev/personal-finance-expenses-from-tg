@@ -14,7 +14,7 @@ if not hasattr(sys, 'real_prefix') and not sys.base_prefix != sys.prefix:
     print("3. Run this script again: python expenses.py\n")
 
 try:
-    import pyperclip  # For clipboard functionality
+    import pyperclip  # type: ignore # For clipboard functionality
 except ImportError:
     print("ERROR: The 'pyperclip' module is not installed.")
     print("Please run 'bash setup.sh' to set up the virtual environment and "
@@ -54,7 +54,10 @@ Your telegram name, [18/12/2023 11:34]
 Your telegram name, [24/12/2023 18:04]
 180 Slam dunk festival ticket"""
 
-    instruction_label = tk.Label(instruction_frame, text=instructions, justify=tk.LEFT, anchor="w")
+    instruction_label = tk.Label(instruction_frame,
+                                 text=instructions,
+                                 justify=tk.LEFT,
+                                 anchor="w")
     instruction_label.pack(fill=tk.X)
 
     # Create frame for text areas
