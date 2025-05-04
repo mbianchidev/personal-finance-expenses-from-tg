@@ -3,10 +3,10 @@ A simple GUI in Python to extract financial expenses from Telegram messages and 
 
 ## Linux / MacOS
 
-Example of how to run the application on Linux or MacOS.
+Example of how to run the application on Linux or MacOS
 
-```
-just run setup.sh
+```bash
+./setup.sh
 ```
 
 ## Windows
