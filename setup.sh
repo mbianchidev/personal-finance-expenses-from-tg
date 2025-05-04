@@ -35,5 +35,5 @@ fi
 echo -e "${GREEN}Setup completed successfully!${NC}"
 echo -e "${YELLOW}To run the application:${NC}"
 echo -e "  1. ${GREEN}source venv/bin/activate${NC} (if not already activated)"
-echo -e "  2. ${GREEN}python expenses.py${NC}"
+echo -e "  2. ${GREEN}py expenses.py${NC}"
 echo -e "${YELLOW}Enjoy!${NC}"
