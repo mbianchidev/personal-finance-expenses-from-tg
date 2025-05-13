@@ -120,12 +120,12 @@ Your telegram name, [24/12/2023 18:04]
                             command=on_copy)
     copy_button.pack(side=tk.LEFT, padx=5)
 
-    clear_input_button = tk.Button(button_frame, 
+    clear_input_button = tk.Button(button_frame,
                                    text="Clear Input",
                                    command=on_clear_input)
     clear_input_button.pack(side=tk.LEFT, padx=5)
 
-    clear_output_button = tk.Button(button_frame, 
+    clear_output_button = tk.Button(button_frame,
                                     text="Clear Output",
                                     command=on_clear_output)
     clear_output_button.pack(side=tk.LEFT, padx=5)
