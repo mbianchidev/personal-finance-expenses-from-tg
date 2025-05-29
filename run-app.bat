@@ -26,12 +26,3 @@ if errorlevel 1 (
 call .\win-venv\Scripts\activate.bat
 echo Running the application...
 python expenses.py
-
-echo.
-echo Setup completed successfully!
-echo.
-echo To run the application:
-echo   1. call .\win-venv\Scripts\activate.bat (if not already activated)
-echo   2. python expenses.py
-echo.
-echo Enjoy!

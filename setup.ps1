@@ -49,3 +49,13 @@ Write-ColorOutput Yellow " (if not already activated)"
 Write-ColorOutput Yellow "  2. " -NoNewline
 Write-ColorOutput Green "python expenses.py"
 Write-ColorOutput Yellow "Enjoy!"
+
+# Run the script
+Write-ColorOutput Yellow "Running the script..."
+try {
+  python expenses.py
+}
+catch {
+  Write-Output "Failed to run the script. Please check the script for errors."
+  exit 1
+}

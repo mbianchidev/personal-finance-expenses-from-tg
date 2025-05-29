@@ -11,21 +11,14 @@ Example of how to run the application on Linux or MacOS
 
 ## Windows
 
-Run these commands in the Windows command line (cmd) or PowerShell from the repo folder.
+Run this commands in PowerShell (ps) from the repo folder.
 
-```bash
-
-# Create a new virtual environment (if not already created)
-python -m venv win-venv
-
-# Activate the virtual environment
-.\win-venv\Scripts\activate
-
-# Install dependencies
-pip install pyperclip
-
-# Run the application
-python expenses.py
+```ps1
+.\setup.ps1
 ```
 
-Or run the .bat/ps1 files.
+or in the Windows command line (cmd)
+
+```cmd
+.\run-app.bat
+```

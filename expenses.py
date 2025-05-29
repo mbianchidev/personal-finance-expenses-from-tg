@@ -23,15 +23,48 @@ except ImportError:
 
 
 def process_input(input_str):
-    entries = re.findall(
-        r'(.+), \[(\d{2}/\d{2}/\d{4} \d{2}:\d{2})\]\n([\d,]+) (.+)', input_str)
+    # Match different format patterns:
+    # 1. Standard format with DD/MM/YYYY HH:MM
+    # 2. Format with M/D/YYYY HH:MM AM/PM
+    # Process each message block separately
+    message_blocks = re.split(r'\n(?=\w+[^,\n]+, \[)', input_str)
 
     result_str = ""
-    for entry in entries:
-        description = entry[3].strip()
-        amount = entry[2]
+    for block in message_blocks:
+        block = block.strip()
+        if not block:
+            continue
 
-        result_str += f"{description}\t€ {amount}\n"
+        # Try different patterns
+        # Pattern 1: Name, [DD/MM/YYYY HH:MM]
+        # Pattern 2: Name, [M/D/YYYY HH:MM AM/PM]
+        patterns = [
+            r'(?:.+), \[(?:\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{1,2}(?:\s?[AP]M)?)\]\s*\n([\d,]+)\s+(.+)',
+            r'(?:.+), \[(?:\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{1,2}(?:\s?[AP]M)?)\]\s*\n([\d,.]+)\s+(.+)'
+        ]
+
+        matched = False
+        for pattern in patterns:
+            match = re.search(pattern, block)
+            if match:
+                amount = match.group(1).strip()
+                description = match.group(2).strip()
+                result_str += f"{description}\t€ {amount}\n"
+                matched = True
+                break
+
+        # If no match was found, try a more relaxed pattern
+        if not matched and re.search(r'\d+[,.]?\d*', block):
+            # Look for amount and description in the text following the timestamp
+            after_timestamp = re.split(r'\]\s*\n', block)
+            if len(after_timestamp) > 1:
+                content = after_timestamp[1].strip()
+                # Extract amount and description
+                amount_match = re.match(r'([\d,.]+)\s+(.+)', content)
+                if amount_match:
+                    amount = amount_match.group(1).strip()
+                    description = amount_match.group(2).strip()
+                    result_str += f"{description}\t€ {amount}\n"
 
     return result_str.strip()
 
@@ -47,12 +80,7 @@ def create_gui():
     instruction_frame.pack(fill=tk.X, padx=10, pady=5)
 
     # Add instructions label
-    instructions = """Format examples:
-Your telegram name, [18/12/2023 11:34]
-100 Macbook keyboard
-
-Your telegram name, [24/12/2023 18:04]
-180 Slam dunk festival ticket"""
+    instructions = """Copy your telegram messages here"""
 
     instruction_label = tk.Label(instruction_frame,
                                  text=instructions,
