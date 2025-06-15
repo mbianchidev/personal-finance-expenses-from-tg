@@ -14,7 +14,7 @@ Write-ColorOutput Yellow "Setting up Telegram Expenses Parser environment..."
 if (-not (Test-Path -Path "win-venv")) {
   Write-ColorOutput Yellow "Creating virtual environment..."
   try {
-      python -m venv win-venv
+      py -m venv win-venv
       Write-ColorOutput Green "Virtual environment created successfully!"
   }
   catch {
@@ -47,13 +47,13 @@ Write-ColorOutput Yellow "  1. " -NoNewline
 Write-ColorOutput Green ".\win-venv\Scripts\Activate.ps1" -NoNewline
 Write-ColorOutput Yellow " (if not already activated)"
 Write-ColorOutput Yellow "  2. " -NoNewline
-Write-ColorOutput Green "python expenses.py"
+Write-ColorOutput Green "py expenses.py"
 Write-ColorOutput Yellow "Enjoy!"
 
 # Run the script
 Write-ColorOutput Yellow "Running the script..."
 try {
-  python expenses.py
+  py expenses.py
 }
 catch {
   Write-Output "Failed to run the script. Please check the script for errors."
