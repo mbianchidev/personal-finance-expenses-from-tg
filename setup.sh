@@ -47,4 +47,4 @@ echo -e "  2. ${GREEN}python expenses.py${NC}"
 echo -e "${YELLOW}Enjoy!${NC}"
 
 source venv/bin/activate
-python expenses-macbook.py
+python expenses.py
