@@ -80,13 +80,14 @@ def process_input(input_str):
 
         # If still no match, try simple format: <amount> <description>
         # (Telegram web copy-paste format without timestamp)
-        # Handle each line separately for this format
+        # Handle each line separately for this format since multiple simple
+        # lines can be in one block (unlike timestamp-based formats)
         if not matched:
             for line in block.split('\n'):
                 line = line.strip()
                 if not line:
                     continue
-                simple_match = re.match(r'^([\d,\.]+)\s+(.+)$', line)
+                simple_match = re.match(r'^(\d+(?:[,\.]\d+)?)\s+(.+)$', line)
                 if simple_match:
                     amount = format_amount(simple_match.group(1).strip())
                     description = simple_match.group(2).strip()
