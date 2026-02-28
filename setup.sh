@@ -31,6 +31,30 @@ source venv/bin/activate
 echo -e "${YELLOW}Checking Python path...${NC}"
 echo "Python interpreter: $(which python)"
 
+# Check for tkinter support (required for the GUI)
+echo -e "${YELLOW}Checking for tkinter support...${NC}"
+if ! python -c "import tkinter" 2>/dev/null; then
+    echo -e "${YELLOW}tkinter not found. Attempting to install...${NC}"
+    if command -v brew &>/dev/null; then
+        PY_VER=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+        brew install "python-tk@${PY_VER}"
+        if ! python -c "import tkinter" 2>/dev/null; then
+            echo "Failed to install tkinter via Homebrew."
+            exit 1
+        fi
+        echo -e "${GREEN}tkinter installed successfully!${NC}"
+    else
+        echo "tkinter is not available and Homebrew was not found."
+        echo "Please install tkinter for your Python version:"
+        echo "  macOS:  brew install python-tk@<version>"
+        echo "  Debian/Ubuntu: sudo apt-get install python3-tk"
+        echo "  Fedora: sudo dnf install python3-tkinter"
+        exit 1
+    fi
+else
+    echo -e "${GREEN}tkinter is available.${NC}"
+fi
+
 # Install dependencies using the properly activated environment's pip
 echo -e "${YELLOW}Installing required dependencies...${NC}"
 python -m pip install --upgrade pip

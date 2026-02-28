@@ -1,7 +1,17 @@
 import re
-import tkinter as tk
-from tkinter import scrolledtext
 import sys
+
+try:
+    import tkinter as tk
+    from tkinter import scrolledtext
+except ImportError:
+    print("ERROR: tkinter is not available.")
+    print("Please install it for your Python version:")
+    print("  macOS:        brew install python-tk@3.x")
+    print("  Debian/Ubuntu: sudo apt-get install python3-tk")
+    print("  Fedora:       sudo dnf install python3-tkinter")
+    print("\nOr run 'bash setup.sh' which will handle this automatically.")
+    sys.exit(1)
 
 # Check if running in a virtual environment
 if not hasattr(sys, 'real_prefix') and not sys.base_prefix != sys.prefix:
