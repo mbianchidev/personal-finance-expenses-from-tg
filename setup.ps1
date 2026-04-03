@@ -30,15 +30,23 @@ else {
 Write-ColorOutput Yellow "Activating virtual environment..."
 & .\win-venv\Scripts\Activate.ps1
 
-# Install dependencies
-Write-ColorOutput Yellow "Installing required dependencies..."
+# Install dependencies only if missing
+Write-ColorOutput Yellow "Checking dependencies..."
 try {
-  pip install pyperclip
-  Write-ColorOutput Green "Dependencies installed successfully!"
+  py -c "import pyperclip" 2>$null
+  if ($LASTEXITCODE -ne 0) { throw "missing" }
+  Write-ColorOutput Green "All dependencies already installed."
 }
 catch {
-  Write-Output "Failed to install dependencies."
-  exit 1
+  Write-ColorOutput Yellow "Installing required dependencies..."
+  try {
+    pip install --quiet pyperclip
+    Write-ColorOutput Green "Dependencies installed successfully!"
+  }
+  catch {
+    Write-Output "Failed to install dependencies."
+    exit 1
+  }
 }
 
 Write-ColorOutput Green "Setup completed successfully!"
