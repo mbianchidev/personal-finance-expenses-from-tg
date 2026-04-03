@@ -48,6 +48,8 @@ def process_input(input_str):
     message_blocks = re.split(r'\n(?=\w+[^,\n]+, \[)', input_str)
 
     result_str = ""
+    elaborated = 0
+    skipped = 0
     for block in message_blocks:
         block = block.strip()
         if not block:
@@ -70,6 +72,7 @@ def process_input(input_str):
                 amount = format_amount(match.group(1).strip())
                 description = match.group(2).strip()
                 result_str += f"{description}\t€ {amount}\n"
+                elaborated += 1
                 matched = True
                 break
 
@@ -86,6 +89,7 @@ def process_input(input_str):
                     amount = format_amount(amount_match.group(1).strip())
                     description = amount_match.group(2).strip()
                     result_str += f"{description}\t€ {amount}\n"
+                    elaborated += 1
                     matched = True
 
         # If still no match, try simple format: <amount> <description>
@@ -102,8 +106,17 @@ def process_input(input_str):
                     amount = format_amount(simple_match.group(1).strip())
                     description = simple_match.group(2).strip()
                     result_str += f"{description}\t€ {amount}\n"
+                    elaborated += 1
 
-    return result_str.strip()
+        if not matched and not any(
+            re.match(r'^(\d+(?:[,\.]\d+)?)\s+(.+)$', l.strip())
+            for l in block.split('\n') if l.strip()
+        ):
+            skipped += 1
+
+    lines = result_str.strip().split('\n') if result_str.strip() else []
+    lines.reverse()
+    return '\n'.join(lines), elaborated, skipped
 
 
 def create_gui():
@@ -150,6 +163,11 @@ def create_gui():
     # Configure the row to expand
     text_frame.rowconfigure(1, weight=1)
 
+    # Stats label
+    stats_label = tk.Label(root, text="Elaborated: 0 | Skipped: 0",
+                           anchor="w")
+    stats_label.pack(fill=tk.X, padx=10, pady=(5, 0))
+
     # Create frame for buttons
     button_frame = tk.Frame(root)
     button_frame.pack(fill=tk.X, padx=10, pady=10)
@@ -157,9 +175,12 @@ def create_gui():
     # Function to process input
     def on_process():
         input_content = input_text.get("1.0", tk.END)
-        output_content = process_input(input_content)
+        output_content, elaborated, skipped = process_input(input_content)
         output_text.delete("1.0", tk.END)
         output_text.insert("1.0", output_content)
+        stats_label.config(
+            text=f"Elaborated: {elaborated} | Skipped: {skipped}"
+        )
 
     # Function to copy output to clipboard
     def on_copy():
