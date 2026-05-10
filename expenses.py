@@ -141,9 +141,7 @@ def process_input(input_str):
         ):
             skipped += 1
 
-    lines = result_str.strip().split('\n') if result_str.strip() else []
-    lines.reverse()
-    return '\n'.join(lines), elaborated, skipped
+    return result_str.strip(), elaborated, skipped
 
 
 def create_gui():
@@ -222,6 +220,15 @@ def create_gui():
     def on_clear_output():
         output_text.delete("1.0", tk.END)
 
+    # Function to reverse output order
+    def on_reverse():
+        content = output_text.get("1.0", tk.END).strip()
+        if content:
+            lines = content.split('\n')
+            lines.reverse()
+            output_text.delete("1.0", tk.END)
+            output_text.insert("1.0", '\n'.join(lines))
+
     # Add buttons
     process_button = tk.Button(button_frame,
                                text="Process",
@@ -242,6 +249,11 @@ def create_gui():
                                     text="Clear Output",
                                     command=on_clear_output)
     clear_output_button.pack(side=tk.LEFT, padx=5)
+
+    reverse_button = tk.Button(button_frame,
+                               text="Reverse Order",
+                               command=on_reverse)
+    reverse_button.pack(side=tk.LEFT, padx=5)
 
     # Start the GUI event loop
     root.mainloop()
