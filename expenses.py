@@ -39,13 +39,23 @@ def format_amount(amount):
     return amount
 
 
+def get_currency_symbol(currency):
+    """Map currency code to symbol, default to €."""
+    symbols = {
+        'USD': '$', 'GBP': '£', 'JPY': '¥', 'CHF': 'CHF',
+        'CAD': 'CA$', 'AUD': 'A$', 'EUR': '€',
+    }
+    return symbols.get(currency, '€')
+
+
 def process_input(input_str):
     # Match different format patterns:
-    # 1. Standard format with DD/MM/YYYY HH:MM
-    # 2. Format with M/D/YYYY HH:MM AM/PM
+    # 1. Standard format: Name, [DD/MM/YYYY HH:MM]\n<amount> <desc>
+    # 2. Bracket format: [DD/MM/YYYY HH:MM] Name: <amount> [currency] <desc>
     # 3. Simple format: <amount> <expense name>
     # Process each message block separately
-    message_blocks = re.split(r'\n(?=\w+[^,\n]+, \[)', input_str)
+    message_blocks = re.split(
+        r'\n(?=\w+[^,\n]+, \[|\[\d{1,2}/\d{1,2}/\d{4})', input_str)
 
     result_str = ""
     elaborated = 0
@@ -75,6 +85,23 @@ def process_input(input_str):
                 elaborated += 1
                 matched = True
                 break
+
+        # Pattern for: [DD/MM/YYYY HH:MM] Name: amount [currency] desc
+        if not matched:
+            bracket_match = re.search(
+                r'\[\d{1,2}/\d{1,2}/\d{4}\s+\d{1,2}:\d{2}\]\s+'
+                r'.+?:\s+(\d+(?:[,\.]\d+)?)\s+'
+                r'(?:(USD|EUR|GBP|CHF|JPY|CAD|AUD)\s+)?(.+)',
+                block
+            )
+            if bracket_match:
+                amount = format_amount(bracket_match.group(1).strip())
+                currency = bracket_match.group(2)
+                description = bracket_match.group(3).strip()
+                symbol = get_currency_symbol(currency)
+                result_str += f"{description}\t{symbol} {amount}\n"
+                elaborated += 1
+                matched = True
 
         # If no match was found, try a more relaxed pattern
         if not matched and re.search(r'\d+[,\.]?\d*', block):
